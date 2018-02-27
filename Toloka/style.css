@@ -1,0 +1,93 @@
+k {
+  display: block;
+}
+
+.block {
+  display: inline-block;
+  margin-right: 20px;
+}
+
+.keyphrase {
+  font-size: 200%;
+  font-weight: bold;
+  display: inline-block;
+}
+
+.descr-list {
+  padding: 10px 0;
+  box-sizing: border-box;
+}
+
+.descr + .descr {
+  padding-top: 10px;
+}
+
+.question_block {
+  padding-bottom: 10px;
+  padding-top: 20px;
+}
+
+.choices {
+  margin-top: 20px;
+  padding-bottom: 20px;
+  padding-top: 20px;
+}
+
+.phrase {
+  margin:0px auto;
+  //font-weight: bold;
+  font-size: 150%;
+  padding-bottom: 30px;
+  padding-top: 60px;
+  
+}
+
+.field_type_textarea {
+  padding-top: 5px;
+  padding-bottom: 20px;
+}
+
+.tooltiplabel {
+  font-size: 75%;
+  font-style: italic;  
+}
+
+.tooltip {
+    position: relative;
+    display: inline-block;
+    border-bottom: 1px dotted black;
+    font-size: 75%;
+}
+
+.tooltip .tooltiptext {
+    visibility: hidden;
+    width: 600px;
+    background-color: #555;
+    color: #fff;
+    text-align: left;
+    border-radius: 6px;
+    padding: 10px 10px 10px 10px;
+    position: absolute;
+    z-index: 1000;
+    bottom: 125%;
+    left: 50%;
+    margin-left: -60px;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.tooltip .tooltiptext::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #555 transparent transparent transparent;
+}
+
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+    opacity: 1;
+}
