@@ -3,47 +3,19 @@ exports.Task = extend(TolokaHandlebarsTask, function (options) {
 }, {
   onRender: function() {
     // DOM-элемент задания сформирован (доступен через #getDOMElement())
-    
-    // Splits sentence into words
-    function ParseSentence(s) {
-			var words = s.split(' ');
-			return words;
-		};
-
-		// To lowercase and remove punctuation character (if exists)
-		function Normalize(word) {
-			word = word.toLowerCase();
-			var last_char = word.charAt(word.length - 1);
-			return word;
-		};
-
-		// Checks if obj already exists in arr
-		function Contains(arr, obj) {
-			var contains = false;
-			for (var i = 0; i < arr.length; i++) {
-				if (arr[i] == obj) {
-					contains = true;
-					break;
-				};
-			};
-			return contains;
-		};
-
-    var sentence = 'Светить всегда, светить везде, до дней последних донца; светить — и никаких гвоздей, — вот лозунг мой и солнца!';
-    var words = ParseSentence(sentence);
-    var words_number = words.length;
+		var input = 'Светить всегда, светить везде, до дней последних донца; светить — и никаких гвоздей, — вот лозунг мой и солнца!';
+		var words = input.split(' ');
     var classes = ['Глагол', 'Существительное', 'Прилагательное', 'Наречие', 'Союз', 'Местоимение', 'Частица', 'Предлог'];
-    var classes_num = 8;
     var bio = []
     for (var i = 0; i < words.length; i++) {
-      bio.push(-1);
+      bio.push('O');
     };
-    var current = 0;
+    var current = classes[0];
     var result = '';
     
     var categories = $(this.getDOMElement()).find('.categories');
     var prev = $(this.getDOMElement()).find('#1.' + current);
-    for (var i = 0; i < classes_num; i++) {
+    for (var i = 0; i < classes.length; i++) {
       categories.append(
       	$('<button/>', {
         	text: classes[i],
@@ -55,43 +27,64 @@ exports.Task = extend(TolokaHandlebarsTask, function (options) {
             $(this).attr('class', 'category_click');
             // action
             var id = parseInt(this.id.split('.')[1]);
-            current = id;
+            current = $(this).text();
             prev = $(this);
         },
         }));
     };
-    
+   
+    var first = 0;
+    var last = 0;
+    var first_pos = 0;
+    var highlighting = false;
+    var selected = false;
     var sentence = $(this.getDOMElement()).find('.sentence');
-    for (var i = 0; i < words_number; i++) {
+    for (var i = 0; i < words.length; i++) {
       sentence.append(
       	$('<span/>', {
         	text: words[i] + ' ',
           id: '2.' + i,
           class: 'word',
-        	click: function () {
-            if ($(this).attr('class') == 'word') {
-              // style
-              $(this).attr('class', 'word_click');
-              // action
-              var id = parseInt(this.id.split('.')[1]);
-              bio[id] = current;
+          mousedown: function () {
+            if (selected == false) {
+              selected = true;
+              highlighting = true;
+              first_pos = $(this).position().left;
+            	first = parseInt(this.id.split('.')[1]);
+            	$(this).addClass('word_selected');
             } else {
-              // style
-              $(this).attr('class', 'word');
-              // action
-              var id = parseInt(this.id.split('.')[1]);
-              bio[id] = -1;
+              selected = false;
+              for (var j = first; j <= last; j++) {
+                bio[j] = 'O';
+                $(this).parent().find('.word_selected').
+                removeClass('word_selected');
+              };
             };
           },
-        	mouseover: function () {
-            // style
-            this.style.cursor = 'pointer';
-            this.style.color = 'red';
-        	},
-        	mouseout: function () {
-            // style
-          	this.style.color = 'black';
-        	},
+          mouseup: function () {
+            if (selected == true) {
+            	var id = parseInt(this.id.split('.')[1]);
+            	last = id;
+            	highlighting = false;
+            	for (var j = first; j <= last; j++) {
+              	bio[j] = current;
+            	};
+            };
+          },
+          mouseenter: function () {
+            if (highlighting == true) {
+              $(this).addClass('word_selected');
+            };
+          },
+          mouseleave: function () {
+            var word_pos = $(this).position().left
+            var mouse_pos = event.pageX
+            if (highlighting == true && 
+                ((first_pos < word_pos && mouse_pos < word_pos) ||
+                (first_pos > word_pos && mouse_pos > word_pos))) {
+              $(this).removeClass('word_selected');
+            };
+          }
     		}));
     };
     
@@ -100,32 +93,15 @@ exports.Task = extend(TolokaHandlebarsTask, function (options) {
       $('<button/>', {
         text: "ГОТОВО",
         id: '3.0',
-        class: 'done',
+        class: 'done_btn',
         click: function () {
           // Create BIO-output
-          // http://natural-language understanding.wikia.com/wiki/Named_entity_recognition
           result = '';
-          var b = true;
           for (var i = 0; i < words.length; i++) {
-            var tag = 'O';
-            if (bio[i] != -1) {
-              if (i > 0 && bio[i] == bio[i - 1]) {
-                b = false;
-              } else {
-                b = true;
-              }
-              tag = (b ? 'B-' : 'I-') + classes[bio[i]];
-            };
-            result += words[i] + ' ' + tag + '\n';
+            result += words[i] + ' ' + bio[i] + '\n';
           };
           alert(result);
         },
-        mouseover: function () {
-        	this.style.backgroundColor = 'Yellow';
-      	},
-        mouseout: function () {
-        	this.style.backgroundColor = "White";
-      	},
       }));
   },
   onDestroy: function() {

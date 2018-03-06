@@ -1,3 +1,11 @@
+::selection {
+  background: transparent;
+}
+
+.word_selected {
+  background-color: yellow;
+}
+
 .category {
   background-color: white;
 }
@@ -6,16 +14,12 @@
   background-color: yellow;
 }
 
-.word {
-}
-
 .word_click {
   border: solid;
   border-color: green;
   border-width: 1px;
 }
 
-.done {
-  background-color: transparent;
-  color: green;
+.done_btn:hover {
+  background-color: yellow;
 }
