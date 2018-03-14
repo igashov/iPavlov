@@ -1,9 +1,21 @@
-::selection {
-  background: transparent;
+.word_h {
+  background-color: yellow;
+  border-top: solid;
+  border-bottom: solid;
+  border-width: thin;
+  border-color: black;
 }
 
-.word_selected {
-  background-color: yellow;
+.word_left {
+	border-left: solid;
+	border-width: thin;
+	border-color: black;
+}
+
+.word_right {
+	border-right: solid;
+	border-width: thin;
+	border-color: black;
 }
 
 .category {
@@ -14,12 +26,6 @@
   background-color: yellow;
 }
 
-.word_click {
-  border: solid;
-  border-color: green;
-  border-width: 1px;
-}
-
-.done_btn:hover {
+.done:hover {
   background-color: yellow;
 }
